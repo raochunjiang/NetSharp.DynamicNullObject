@@ -7,6 +7,9 @@
     <Description>动态空对象</Description>
     <Copyright>饶春江</Copyright>
     <PackageReleaseNotes>暂无说明</PackageReleaseNotes>
+    <Version>1.0.0-preview</Version>
+    <RepositoryUrl>https://github.com/raochunjiang/NetSharp.DynamicNullObject.git</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

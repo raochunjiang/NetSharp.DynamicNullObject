@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCopyrightAttribute("饶春江")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("动态空对象")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0-preview")]
 [assembly: System.Reflection.AssemblyProductAttribute("NetSharp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NetSharp.DynamicNullObject")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

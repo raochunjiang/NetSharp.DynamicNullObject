@@ -7,7 +7,7 @@
   "targets": {
     ".NETStandard,Version=v2.0": {},
     ".NETStandard,Version=v2.0/": {
-      "NetSharp.DynamicNullObject/1.0.0": {
+      "NetSharp.DynamicNullObject/1.0.0-preview": {
         "dependencies": {
           "NETStandard.Library": "2.0.1",
           "System.Reflection.Emit": "4.3.0"
@@ -98,7 +98,7 @@
     }
   },
   "libraries": {
-    "NetSharp.DynamicNullObject/1.0.0": {
+    "NetSharp.DynamicNullObject/1.0.0-preview": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -1725,7 +1725,7 @@
           "build/netcoreapp1.0/xunit.runner.visualstudio.props": {}
         }
       },
-      "NetSharp.DynamicNullObject/1.0.0": {
+      "NetSharp.DynamicNullObject/1.0.0-preview": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
@@ -5774,7 +5774,7 @@
         "xunit.runner.visualstudio.nuspec"
       ]
     },
-    "NetSharp.DynamicNullObject/1.0.0": {
+    "NetSharp.DynamicNullObject/1.0.0-preview": {
       "type": "project",
       "path": "../NetSharp.DynamicNullObject/NetSharp.DynamicNullObject.csproj",
       "msbuildProject": "../NetSharp.DynamicNullObject/NetSharp.DynamicNullObject.csproj"
@@ -5783,7 +5783,7 @@
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
       "Microsoft.NETCore.App >= 2.0.0",
-      "NetSharp.DynamicNullObject >= 1.0.0",
+      "NetSharp.DynamicNullObject >= 1.0.0-preview",
       "xunit >= 2.4.0-beta.2.build4010",
       "xunit.runner.visualstudio >= 2.4.0-beta.2.build4010"
     ]

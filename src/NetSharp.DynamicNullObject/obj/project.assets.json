@@ -815,7 +815,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "1.0.0-preview",
     "restore": {
       "projectUniqueName": "E:\\我的Github代码库\\NetSharp.DynamicNullObject\\src\\NetSharp.DynamicNullObject\\NetSharp.DynamicNullObject.csproj",
       "projectName": "NetSharp.DynamicNullObject",
