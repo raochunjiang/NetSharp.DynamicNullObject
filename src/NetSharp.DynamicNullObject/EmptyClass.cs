@@ -126,22 +126,28 @@ namespace NetSharp.DynamicNullObject
             {
                 foreach (var declaredMethod in interfaceType.GetTypeInfo().DeclaredMethods.Where(m => !m.IsPropertyBinding()))
                 {
-                    var methodBuilder = typeBuilder.DefineMethod(
-                                declaredMethod.Name,
-                                _interfaceMethodAttributes,
-                                declaredMethod.CallingConvention,
-                                declaredMethod.ReturnType,
-                                declaredMethod.GetParameterTypes());
-                    methodBuilder.DefineGenericParameters(declaredMethod);
-                    var il = methodBuilder.GetILGenerator();
-                    if (declaredMethod.ReturnType != _voidReturnType)
-                    {
-                        il.EmitDefault(declaredMethod.ReturnType);
-                    }
-                    il.Emit(OpCodes.Ret);
+                    var methodBuilder = DefineEmptyMethod(typeBuilder, declaredMethod);
                     typeBuilder.DefineMethodOverride(methodBuilder, declaredMethod);
                 }
             }
+        }
+
+        private static MethodBuilder DefineEmptyMethod(TypeBuilder typeBuilder, MethodInfo templateMethod)
+        {
+            var methodBuilder = typeBuilder.DefineMethod(
+                                templateMethod.Name,
+                                _interfaceMethodAttributes,
+                                templateMethod.CallingConvention,
+                                templateMethod.ReturnType,
+                                templateMethod.GetParameterTypes());
+            methodBuilder.DefineGenericParameters(templateMethod);
+            var il = methodBuilder.GetILGenerator();
+            if (templateMethod.ReturnType != _voidReturnType)
+            {
+                il.EmitDefault(templateMethod.ReturnType);
+            }
+            il.Emit(OpCodes.Ret);
+            return methodBuilder;
         }
 
         private static void DefineProperties(TypeBuilder typeBuilder, IEnumerable<Type> interfaceTypes)
@@ -154,38 +160,46 @@ namespace NetSharp.DynamicNullObject
                         declaredProperty.Name,
                         declaredProperty.Attributes,
                         declaredProperty.PropertyType, Type.EmptyTypes);
-                    var fieldForPropertyBuilder = typeBuilder.DefineField(
-                        $"_fieldForProperty<{declaredProperty.Name}>",
-                        declaredProperty.PropertyType,
-                        FieldAttributes.Private);
+                    //var fieldForPropertyBuilder = typeBuilder.DefineField(
+                    //    $"_fieldForProperty<{declaredProperty.Name}>",
+                    //    declaredProperty.PropertyType,
+                    //    FieldAttributes.Private);
                     if (declaredProperty.CanRead)
                     {
-                        var getMethodBuilder = typeBuilder.DefineMethod(
-                            declaredProperty.GetMethod.Name,
-                            _interfaceMethodAttributes,
-                            declaredProperty.GetMethod.CallingConvention,
-                            declaredProperty.GetMethod.ReturnType,
-                            declaredProperty.GetMethod.GetParameterTypes());
-                        var il = getMethodBuilder.GetILGenerator();
-                        il.Emit(OpCodes.Ldarg_0);
-                        il.Emit(OpCodes.Ldfld, fieldForPropertyBuilder);
-                        il.Emit(OpCodes.Ret);
+                        // property is actually a cuple of get and set method,it could be empty too.
+
+                        //var getMethodBuilder = typeBuilder.DefineMethod(
+                        //    declaredProperty.GetMethod.Name,
+                        //    _interfaceMethodAttributes,
+                        //    declaredProperty.GetMethod.CallingConvention,
+                        //    declaredProperty.GetMethod.ReturnType,
+                        //    declaredProperty.GetMethod.GetParameterTypes());
+                        //var il = getMethodBuilder.GetILGenerator();
+                        //il.Emit(OpCodes.Ldarg_0);
+                        //il.Emit(OpCodes.Ldfld, fieldForPropertyBuilder);
+                        //il.Emit(OpCodes.Ret);
+
+                        var getMethodBuilder = DefineEmptyMethod(typeBuilder, declaredProperty.GetMethod);
                         typeBuilder.DefineMethodOverride(getMethodBuilder, declaredProperty.GetMethod);
                         propertyBuilder.SetGetMethod(getMethodBuilder);
                     }
                     if (declaredProperty.CanWrite)
                     {
-                        var setMethodBuilder = typeBuilder.DefineMethod(
-                            declaredProperty.SetMethod.Name,
-                            _interfaceMethodAttributes,
-                            declaredProperty.SetMethod.CallingConvention,
-                            declaredProperty.SetMethod.ReturnType,
-                            declaredProperty.SetMethod.GetParameterTypes());
-                        var il = setMethodBuilder.GetILGenerator();
-                        il.Emit(OpCodes.Ldarg_0);
-                        il.Emit(OpCodes.Ldarg_1);
-                        il.Emit(OpCodes.Stfld, fieldForPropertyBuilder);
-                        il.Emit(OpCodes.Ret);
+                        // property is actually a cuple of get and set method,it could be empty too.
+
+                        //var setMethodBuilder = typeBuilder.DefineMethod(
+                        //    declaredProperty.SetMethod.Name,
+                        //    _interfaceMethodAttributes,
+                        //    declaredProperty.SetMethod.CallingConvention,
+                        //    declaredProperty.SetMethod.ReturnType,
+                        //    declaredProperty.SetMethod.GetParameterTypes());
+                        //var il = setMethodBuilder.GetILGenerator();
+                        //il.Emit(OpCodes.Ldarg_0);
+                        //il.Emit(OpCodes.Ldarg_1);
+                        //il.Emit(OpCodes.Stfld, fieldForPropertyBuilder);
+                        //il.Emit(OpCodes.Ret);
+                        var setMethodBuilder = DefineEmptyMethod(typeBuilder, declaredProperty.SetMethod);
+
                         typeBuilder.DefineMethodOverride(setMethodBuilder, declaredProperty.SetMethod);
                         propertyBuilder.SetSetMethod(setMethodBuilder);
                     }
