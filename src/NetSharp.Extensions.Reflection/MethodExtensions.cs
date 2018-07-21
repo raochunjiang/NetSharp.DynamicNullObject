@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace NetSharp.Extensions.Reflection
@@ -61,6 +62,18 @@ namespace NetSharp.Extensions.Reflection
                 throw new ArgumentNullException(nameof(method));
             }
             return method.GetParameters().Select(p => p.ParameterType).ToArray();
+        }
+
+        /// <summary>
+        /// 验证当前方法是否为异步(async)方法。
+        /// </summary>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        public static bool IsAsynchronous(this MethodBase method)
+        {
+            Type asncStateMachine = typeof(AsyncStateMachineAttribute);
+            var attrib = (AsyncStateMachineAttribute)method.GetCustomAttribute(asncStateMachine);
+            return (attrib != null);
         }
     }
 }

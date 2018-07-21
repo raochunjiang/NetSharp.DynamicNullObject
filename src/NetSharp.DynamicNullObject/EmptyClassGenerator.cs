@@ -1,86 +1,58 @@
-﻿using NetSharp.DynamicNullObject.Globalization;
-using NetSharp.Extensions.Reflection;
+﻿using NetSharp.Extensions.Reflection;
 using NetSharp.Extensions.Reflection.Emit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Threading.Tasks;
 
 namespace NetSharp.DynamicNullObject
 {
-    /// <summary>
-    /// 提供返回指定接口类型的空实现类型的操作。
-    /// </summary>
-    public sealed class EmptyClass
+    internal class EmptyClassGenerator
     {
-        private static readonly string _assemblyName = "NetSharp.DynamicNullObject.Generated";
-        private static readonly string _defaultNamespace = "NetSharp.DynamicNullObject.Generated";
-
-        private static volatile object _blocker = new object();
-
-        private static Dictionary<string, int> _classNameCounter = new Dictionary<string, int>();
-        private static Dictionary<Type, Type> _definedTypes = new Dictionary<Type, Type>();
+        public static EmptyClassGenerator Default
+        {
+            get
+            {
+                if (_default == null)
+                {
+                    var assembly = AssemblyBuilder.DefineDynamicAssembly(
+                        new AssemblyName("NetSharp.DynamicNullObject.Generated"),
+                        AssemblyBuilderAccess.RunAndCollect);
+                    _default = new EmptyClassGenerator(assembly, "NetSharp.DynamicNullObject.Generated");
+                }
+                return _default;
+            }
+        }
+        private static EmptyClassGenerator _default;
 
         private static readonly Type _objectType = typeof(object);
         private static readonly Type _voidReturnType = typeof(void);
-
+        private static readonly Type _taskType = typeof(Task);
         private static readonly MethodAttributes _interfaceMethodAttributes = MethodAttributes.Public | MethodAttributes.Final | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual;
 
-        private static readonly ModuleBuilder _module;
-        static EmptyClass()
+        private ModuleBuilder _module;
+        private readonly string _namespace;
+
+        private volatile object _blocker = new object();
+
+        private Dictionary<string, int> _classNameCounter = new Dictionary<string, int>();
+        private Dictionary<Type, Type> _definedTypes = new Dictionary<Type, Type>();
+
+        internal EmptyClassGenerator(AssemblyBuilder dynamicAssembly, string @namespace)
         {
-            var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(_assemblyName), AssemblyBuilderAccess.RunAndCollect);
-            _module = assembly.DefineDynamicModule("Default");
+            _module = dynamicAssembly.DefineDynamicModule("NetSharp");
+            _namespace = @namespace;
         }
 
-        /// <summary>
-        /// 返回指定接口类型的空实现类型。
-        /// </summary>
-        /// <param name="interfaceType">接口类型。</param>
-        /// <returns>指定接口类型的空实现类型。</returns>
-        public static Type Of(Type interfaceType)
-        {
-            var interfaceTypeInfo = interfaceType?.GetTypeInfo() ?? throw new ArgumentNullException(nameof(interfaceType));
-            if (!interfaceTypeInfo.IsInterface)
-            {
-                throw new InvalidOperationException(string.Format(ExceptionMessage.TheSpecifiedTypeShouldBeAnInterfaceType, nameof(interfaceType)));
-            }
-            if (!interfaceTypeInfo.IsNestedVisible())
-            {
-                throw new InvalidOperationException(string.Format(ExceptionMessage.UnableToAccessTheSpecifiedType, nameof(interfaceType)));
-            }
-
-            return GetEmptyClass(interfaceTypeInfo);
-        }
-
-        /// <summary>
-        /// 返回指定接口类型参数的空实现类型。
-        /// </summary>
-        /// <typeparam name="TInterface">接口类型。</typeparam>
-        /// <returns>指定接口类型参数的空实现类型。</returns>
-        public static Type Of<TInterface>()
-        {
-            var interfaceTypeInfo = typeof(TInterface).GetTypeInfo();
-            if (!interfaceTypeInfo.IsInterface)
-            {
-                throw new InvalidOperationException(string.Format(ExceptionMessage.TheSpecifiedTypeShouldBeAnInterfaceType, nameof(TInterface)));
-            }
-            if (!interfaceTypeInfo.IsNestedVisible())
-            {
-                throw new InvalidOperationException(string.Format(ExceptionMessage.UnableToAccessTheSpecifiedType, nameof(TInterface)));
-            }
-
-            return GetEmptyClass(interfaceTypeInfo);
-        }
-
-        private static Type GetEmptyClass(Type interfaceType)
+        internal Type GetEmptyClass(Type interfaceType)
         {
             lock (_blocker)
             {
                 if (!_definedTypes.TryGetValue(interfaceType, out Type implClass))
                 {
-                    var className = GetEmptyClassName(interfaceType);
+                    var className = GetEmptyClassName(interfaceType, _classNameCounter, _namespace);
                     var interfaceTypes = interfaceType.GetNestedVisibleInterfaces().Concat(new Type[] { interfaceType }).ToArray();
                     var typeBuilder = _module.DefineType(className, TypeAttributes.Public, _objectType, interfaceTypes);
                     typeBuilder.DefineGenericParameters(interfaceType);
@@ -93,20 +65,20 @@ namespace NetSharp.DynamicNullObject
             }
         }
 
-        private static string GetEmptyClassName(Type interfaceType)
+        private static string GetEmptyClassName(Type interfaceType, Dictionary<string, int> classNameCounter, string @namespace)
         {
             var className = interfaceType.GetProgrammingName();
             if (className.StartsWith("I", StringComparison.Ordinal))
             {
                 className = className.Substring(1);
             }
-            if (!_classNameCounter.TryGetValue(className, out int index))
+            if (!classNameCounter.TryGetValue(className, out int index))
             {
-                _classNameCounter.Add(className, value: 0);
+                classNameCounter.Add(className, value: 0);
             }
             else
             {
-                _classNameCounter[className] = ++index;
+                classNameCounter[className] = ++index;
                 if (interfaceType.GetTypeInfo().IsGenericType)
                 {
                     className = className.Insert(className.IndexOf('<'), index.ToString());
@@ -116,7 +88,7 @@ namespace NetSharp.DynamicNullObject
                     className = className + (index.ToString());
                 }
             }
-            return $"{_defaultNamespace}.Empty{className}";
+            return $"{@namespace}.Empty{className}";
             ;
         }
 
@@ -132,6 +104,7 @@ namespace NetSharp.DynamicNullObject
             }
         }
 
+
         private static MethodBuilder DefineEmptyMethod(TypeBuilder typeBuilder, MethodInfo templateMethod)
         {
             var methodBuilder = typeBuilder.DefineMethod(
@@ -144,9 +117,30 @@ namespace NetSharp.DynamicNullObject
             var il = methodBuilder.GetILGenerator();
             if (templateMethod.ReturnType != _voidReturnType)
             {
-                il.EmitDefault(templateMethod.ReturnType);
+                if (templateMethod.ReturnType.IsTask())
+                {
+                    il.Emit(OpCodes.Ldc_I4, 0);
+                    il.Emit(OpCodes.Callvirt, ReflectedMethods.TaskFromResult);
+                    il.Emit(OpCodes.Pop);
+                    il.Emit(OpCodes.Ret);
+                }
+                else if (templateMethod.ReturnType.IsTaskWithResult())
+                {
+                    var taskReturnType = templateMethod.ReturnType.GetGenericArguments().Single();
+                    il.EmitDefault(taskReturnType);
+                    il.Emit(OpCodes.Callvirt, ReflectedMethods.TaskFromResult);
+                    il.Emit(OpCodes.Ret);
+                }
+                else
+                {
+                    il.EmitDefault(templateMethod.ReturnType);
+                    il.Emit(OpCodes.Ret);
+                }
             }
-            il.Emit(OpCodes.Ret);
+            else
+            {
+                il.Emit(OpCodes.Ret);
+            }
             return methodBuilder;
         }
 
@@ -254,5 +248,6 @@ namespace NetSharp.DynamicNullObject
                     customAttributeData.ConstructorArguments.Select(c => c.Value).ToArray());
             }
         }
+
     }
 }

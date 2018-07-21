@@ -13,10 +13,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="EmptyClass.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\NetSharp.Extensions.Reflection\Emit\ILGeneratorExtensions.cs" Link="Reflection\Emit\ILGeneratorExtensions.cs" />
     <Compile Include="..\NetSharp.Extensions.Reflection\Emit\MethodBuilderExtensions.cs" Link="Reflection\Emit\MethodBuilderExtensions.cs" />
     <Compile Include="..\NetSharp.Extensions.Reflection\Emit\TypeBuilderExtensions.cs" Link="Reflection\Emit\TypeBuilderExtensions.cs" />
     <Compile Include="..\NetSharp.Extensions.Reflection\MethodExtensions.cs" Link="Reflection\MethodExtensions.cs" />
+    <Compile Include="..\NetSharp.Extensions.Reflection\ReflectedMethods.cs" Link="Reflection\ReflectedMethods.cs" />
     <Compile Include="..\NetSharp.Extensions.Reflection\TypeExtensions.cs" Link="Reflection\TypeExtensions.cs" />
   </ItemGroup>
 
@@ -37,6 +42,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ExceptionMessage.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Reflection\Emit\" />
   </ItemGroup>
 
 </Project>

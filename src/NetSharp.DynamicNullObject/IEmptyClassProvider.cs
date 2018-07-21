@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Text;
 
 namespace NetSharp.DynamicNullObject
@@ -9,18 +10,20 @@ namespace NetSharp.DynamicNullObject
     /// </summary>
     public interface IEmptyClassProvider
     {
+        AssemblyBuilder Assembly { get; }
+
         /// <summary>
         /// 返回指定接口类型的空实现类型。
         /// </summary>
         /// <param name="interfaceType">接口类型。</param>
         /// <returns>指定接口类型的空实现类型。</returns>
-        Type ClassOf(Type interfaceType);
+        Type GetEmptyClass(Type interfaceType);
 
         /// <summary>
         /// 返回指定接口类型参数的空实现类型。
         /// </summary>
         /// <typeparam name="TInterface">接口类型。</typeparam>
         /// <returns>指定接口类型参数的空实现类型。</returns>
-        Type ClassOf<TInterface>();
+        Type GetEmptyClass<TInterface>();
     }
 }

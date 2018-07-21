@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NetSharp.Extensions.Reflection
 {
@@ -149,5 +150,36 @@ namespace NetSharp.Extensions.Reflection
                 }
             }
         }
+
+        /// <summary>
+        /// 验证当前类型是否为 <see cref="Task"/> 类型。
+        /// </summary>
+        public static bool IsTask(this Type type)
+        {
+            type = type ?? throw new ArgumentNullException(nameof(type));
+            return type == typeof(Task);
+        }
+
+        /// <summary>
+        /// 验证当前类型是否为 <see cref="Task{}"/> 类型。
+        /// </summary>
+        public static bool IsTaskWithResult(this Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            return type.IsGenericType && typeof(Task).GetTypeInfo().IsAssignableFrom(type);
+        }
+
+        // 后期兼容 C# 7.0 时采用
+        //public static bool IsValueTask(this TypeInfo typeInfo)
+        //{
+        //    if (typeInfo == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(typeInfo));
+        //    }
+        //    return typeInfo.IsGenericType && typeInfo.GetGenericTypeDefinition() == typeof(ValueTask<>);
+        //}
     }
 }
