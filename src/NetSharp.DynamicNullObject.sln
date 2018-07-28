@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetSharp.DynamicNullObject.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetSharp.DynamicNullObject", "NetSharp.DynamicNullObject\NetSharp.DynamicNullObject.csproj", "{26646B6C-5139-4C36-8805-547DF657630B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSharp.DynamicNullObject.Samples", "NetSharp.DynamicNullObject.Samples\NetSharp.DynamicNullObject.Samples.csproj", "{38CD8AC8-1B58-4821-8401-8E69109C766F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{26646B6C-5139-4C36-8805-547DF657630B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26646B6C-5139-4C36-8805-547DF657630B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26646B6C-5139-4C36-8805-547DF657630B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38CD8AC8-1B58-4821-8401-8E69109C766F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38CD8AC8-1B58-4821-8401-8E69109C766F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38CD8AC8-1B58-4821-8401-8E69109C766F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38CD8AC8-1B58-4821-8401-8E69109C766F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

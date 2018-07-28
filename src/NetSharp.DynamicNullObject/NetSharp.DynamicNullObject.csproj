@@ -6,8 +6,9 @@
     <Product>NetSharp</Product>
     <Description>动态空对象</Description>
     <Copyright>饶春江</Copyright>
-    <PackageReleaseNotes>暂无说明</PackageReleaseNotes>
-    <Version>1.0.1-preview</Version>
+    <PackageReleaseNotes>支持注入动态程序集，便于.net framework 输出程序集文件。
+支持异步返回空对象</PackageReleaseNotes>
+    <Version>2.0.0</Version>
     <RepositoryUrl>https://github.com/raochunjiang/NetSharp.DynamicNullObject.git</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
   </PropertyGroup>
