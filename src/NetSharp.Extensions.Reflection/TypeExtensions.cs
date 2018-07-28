@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace NetSharp.Extensions.Reflection
@@ -38,7 +37,7 @@ namespace NetSharp.Extensions.Reflection
             }
             if (!typeInfo.IsNested)
                 return name;
-            return $"{GetProgrammingName(type.DeclaringType.GetTypeInfo())}.{name}";
+            return $"{name}";
         }
 
         /// <summary>

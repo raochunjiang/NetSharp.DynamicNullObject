@@ -18,17 +18,13 @@ namespace NetSharp.DynamicNullObject
         public EmptyClassProvider()
         {
             _generator = EmptyClassGenerator.Default;
+            Assembly = (AssemblyBuilder)_generator.Module.Assembly;
         }
 
         public EmptyClassProvider(AssemblyBuilder dynamicAssembly)
-            : this(dynamicAssembly, dynamicAssembly.FullName)
-        {
-        }
-
-        public EmptyClassProvider(AssemblyBuilder dynamicAssembly, string @namespace)
         {
             // TODO:缓存命名空间对应的生成器，避免不明确的类型引用
-            _generator = new EmptyClassGenerator(dynamicAssembly, @namespace);
+            _generator = new EmptyClassGenerator(dynamicAssembly);
             Assembly = dynamicAssembly;
         }
 

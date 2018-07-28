@@ -78,8 +78,8 @@ namespace NetSharp.DynamicNullObject.Tests
             Assert.Equal("EmptyMyServiceName1", class2.Name);
             var genericClass1 = provider.GetEmptyClass<Models.Generic.Namespace1.IMyServiceName<int>>();
             var genericClass2 = provider.GetEmptyClass<Models.Generic.Namespace2.IMyServiceName<int>>();
-            Assert.Equal("EmptyMyServiceName<Int32>", genericClass1.Name);
-            Assert.Equal("EmptyMyServiceName1<Int32>", genericClass2.Name);
+            Assert.Equal("EmptyMyServiceName2", genericClass1.Name);
+            Assert.Equal("EmptyMyServiceName3", genericClass2.Name);
         }
     }
 }

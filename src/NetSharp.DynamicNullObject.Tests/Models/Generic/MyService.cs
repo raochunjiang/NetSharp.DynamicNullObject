@@ -11,6 +11,7 @@ namespace NetSharp.DynamicNullObject.Tests.Models.Generic
             where TNested1 : struct
             where TNested2 : class
         {
+            [MyCustom]
             int Id { get; set; }
 
             void MethodA(TNested1 arg);
@@ -27,5 +28,9 @@ namespace NetSharp.DynamicNullObject.Tests.Models.Generic
         {
 
         }
+    }
+    public class MyCustomAttribute : Attribute
+    {
+
     }
 }

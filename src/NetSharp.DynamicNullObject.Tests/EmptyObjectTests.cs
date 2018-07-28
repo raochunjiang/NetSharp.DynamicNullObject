@@ -48,7 +48,7 @@ namespace NetSharp.DynamicNullObject.Tests
 
         // should getter and setters be empty(no effection)
         [Fact]
-        public void ShouldBeEmpty()
+        public void ShouldServiceBeEmpty()
         {
             var emptyClassProvider = new EmptyClassProvider();
             var emptyObjectProvider = new EmptyObjectProvider(emptyClassProvider);
@@ -57,17 +57,43 @@ namespace NetSharp.DynamicNullObject.Tests
             emptyMyService.Id = 100;
             Assert.Equal(default(int), emptyMyService.Id);
             emptyMyService.MethodA(10);
+            
+        }
 
-            //var emptyNestedMyService = (Models.Generic.MyService<int>.IMyNestedService<int, MyService>)EmptyObject.Of<Models.Generic.MyService<int>.IMyNestedService<int, MyService>>();
-            //emptyNestedMyService.Id = 100;
-            //Assert.Equal(default(int), emptyNestedMyService.Id);
-            //emptyNestedMyService.MethodA(100);
-            //var methodBResult = emptyNestedMyService.MethodB();
-            //Assert.Equal(default(MyService), methodBResult);
-            //var methodCResult = emptyNestedMyService.MethodC();
+        [Fact]
+        public void ShouldGeneraicServiceBeEmpty()
+        {
+            var emptyClassProvider = new EmptyClassProvider();
+            var emptyObjectProvider = new EmptyObjectProvider(emptyClassProvider);
 
-            //var methodDResult = emptyNestedMyService.MethodD();
-            //Assert.Equal(Task<MyService>.FromResult(default(MyService)), methodDResult);
+            var emptyNestedMyService = (Models.Generic.MyService<int>.IMyNestedService<int, MyService>)emptyObjectProvider.GetEmptyObject(
+                typeof(Models.Generic.MyService<int>.IMyNestedService<int,MyService>));
+            emptyNestedMyService.Id = 100;
+            Assert.Equal(default(int), emptyNestedMyService.Id);
+            emptyNestedMyService.MethodA(100);
+            var methodBResult = emptyNestedMyService.MethodB();
+            Assert.Equal(default(MyService), methodBResult);
+            var methodCResult = emptyNestedMyService.MethodC();
+            var methodDResult = emptyNestedMyService.MethodD();
+            Assert.Equal(default(MyService), methodDResult.Result);
+        }
+
+        [Fact]
+        public void ShouldGenericServiceDefinitionBeEmpty()
+        {
+            var emptyClassProvider = new EmptyClassProvider();
+            var emptyObjectProvider = new EmptyObjectProvider(emptyClassProvider);
+
+            var emptyNestedMyService = (Models.Generic.MyService<int>.IMyNestedService<int, MyService>)emptyObjectProvider.GetEmptyObject(
+                typeof(Models.Generic.MyService<>.IMyNestedService<,>), typeof(int), typeof(int), typeof(MyService));
+            emptyNestedMyService.Id = 100;
+            Assert.Equal(default(int), emptyNestedMyService.Id);
+            emptyNestedMyService.MethodA(100);
+            var methodBResult = emptyNestedMyService.MethodB();
+            Assert.Equal(default(MyService), methodBResult);
+            var methodCResult = emptyNestedMyService.MethodC();
+            var methodDResult = emptyNestedMyService.MethodD();
+            Assert.Equal(default(MyService), methodDResult.Result);
         }
     }
 }
